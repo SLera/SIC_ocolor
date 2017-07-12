@@ -1,13 +1,15 @@
 import numpy as np
 from netCDF4 import Dataset
-import matplotlib
-matplotlib.use('qt5agg')
+#import matplotlib
+#matplotlib.use('Agg')
+from matplotlib import pyplot as plt
+
 
 # def read_ifremer_sic_daily(FILENAME):
 #     """Returns U-,V-wind components as flaaten np.arrays for each grid cell in
 #     the for the SELS region (A) or central part of the SELS (B) or a grid point
 #     (C)
-#     CHECK THE REGION SETTINGS IN INSIDE THE FUNCTION
+#     CHECK THE REGION SETTINGS INSIDE THE FUNCTION
 #     Parameters:
 #     -----------
 #     year
@@ -35,10 +37,18 @@ matplotlib.use('qt5agg')
 #     return uwind_reg.flatten(), vwind_reg.flatten(), lats_reg, lons_reg, wtime
 
 fname = '/home/valeria/NIERSC/Scripts/SIC_ocolor/test_data/19980101.nc'
-
+fname_grid = '/home/valeria/NIERSC/Scripts/SIC_ocolor/test_data/grid_north_12km.nc'
 f = Dataset(fname)
-f.variables()
-sic = f.variables['concentration']
-
+#f.variables
+a = f.variables
+qua_ma = f.variables['quality_flag'][:]
+sic_ma = f.variables['concentration'][:]
+sic = sic_ma.data[0,:,:]
+fgr = Dataset(fname_grid)
+lat = fgr.variables['latitude'][:]
+lon= fgr.variables['longitude'][:]
 OUTDIR = '/home/valeria/nfs0/data_sonarc/data/heap/ice_concentration/raw'
 
+#plt.figure()
+#plt.imshow(sic)
+#plt.show()
