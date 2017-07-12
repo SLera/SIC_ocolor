@@ -1,7 +1,7 @@
 import numpy as np
 from netCDF4 import Dataset
-#import matplotlib
-#matplotlib.use('Agg')
+import matplotlib
+matplotlib.use('Agg')
 from matplotlib import pyplot as plt
 
 
@@ -36,19 +36,52 @@ from matplotlib import pyplot as plt
 #
 #     return uwind_reg.flatten(), vwind_reg.flatten(), lats_reg, lons_reg, wtime
 
-fname = '/home/valeria/NIERSC/Scripts/SIC_ocolor/test_data/19980101.nc'
-fname_grid = '/home/valeria/NIERSC/Scripts/SIC_ocolor/test_data/grid_north_12km.nc'
-f = Dataset(fname)
-#f.variables
-a = f.variables
-qua_ma = f.variables['quality_flag'][:]
-sic_ma = f.variables['concentration'][:]
-sic = sic_ma.data[0,:,:]
-fgr = Dataset(fname_grid)
-lat = fgr.variables['latitude'][:]
-lon= fgr.variables['longitude'][:]
-OUTDIR = '/home/valeria/nfs0/data_sonarc/data/heap/ice_concentration/raw'
+land_val = 101
+nodata_val = 102
+def filter1( v, mv, q ):
+    if q == 0:
+        return v
+    elif q == 1:
+        return land_val
+    else:
+        return nodata_val
 
+def filter2( v, mv, q ):
+    if mv:
+        return v
+    else:
+        return nodata_val
+    
+def filter_array( data_set, filt ):
+    q  = data_set.variables['quality_flag'][0,:,:]
+    v  = data_set.variables['concentration'][:].data[0,:,:]
+    mv = data_set.variables['concentration'][:].mask[0,:,:]
+    res = np.zeros( np.shape(v) )
+    for i in range(np.shape(q)[0]):
+        for j in range(np.shape(q)[1]):
+            res[i,j] = filt( v[i,j], mv[i,j], q[i,j] )
+    return res
+
+fname = '/home/lera/NIERSC/scripts/SIC_ocolor/19980101.nc'
+fname_grid = '/home/lera/NIERSC/scripts/SIC_ocolor/grid_north_12km.nc'
+f = Dataset(fname)
+r = filter_array(f, filter1)
+#f.variables
+#a = f.variables
+#qua_ma = f.variables['quality_flag'][:]
+#sic_ma = f.variables['concentration'][:]
+#sic = sic_ma.data[0,:,:]
+#fgr = Dataset(fname_grid)
+#lat = fgr.variables['latitude'][:]
+#lon= fgr.variables['longitude'][:]
+#OUTDIR = '/home/valeria/nfs0/data_sonarc/data/heap/ice_concentration/raw'
+#
 #plt.figure()
 #plt.imshow(sic)
 #plt.show()
+#a=5
+#
+#cmap=plt.cm.rainbow
+#norm = matplotlib.colors.BoundaryNorm(np.arange(0,15,1), cmap.N)
+#plt.scatter(x,y,c=z,cmap=cmap,norm=norm,s=100,edgecolor='none')
+#plt.colorbar(ticks=np.linspace(0,15,1))
