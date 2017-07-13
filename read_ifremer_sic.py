@@ -153,28 +153,25 @@ def array2raster(newRasterfn,rasterOrigin,pixelWidth,pixelHeight,array):
     outband = outRaster.GetRasterBand(1)
     outband.WriteArray(array)
     outRasterSRS = osr.SpatialReference()
-    outRasterSRS.ImportFromEPSG(4326)
+    outRasterSRS.ImportFromEPSG(3973)
     outRaster.SetProjection(outRasterSRS.ExportToWkt())
     outband.FlushCache()
 
 array2raster(newRasterfn,rasterOrigin,pixelWidth,pixelHeight,array)
 
-
-#a = f.variables
-#qua_ma = f.variables['quality_flag'][:]
-#sic_ma = f.variables['concentration'][:]
-#sic = sic_ma.data[0,:,:]
-#fgr = Dataset(fname_grid)
-#lat = fgr.variables['latitude'][:]
-#lon= fgr.variables['longitude'][:]
-#OUTDIR = '/home/valeria/nfs0/data_sonarc/data/heap/ice_concentration/raw'
-#
-#plt.figure()
-#plt.imshow(sic)
-#plt.show()
-#a=5
-#
-#cmap=plt.cm.rainbow
-#norm = matplotlib.colors.BoundaryNorm(np.arange(0,15,1), cmap.N)
-#plt.scatter(x,y,c=z,cmap=cmap,norm=norm,s=100,edgecolor='none')
-#plt.colorbar(ticks=np.linspace(0,15,1))
+#gdalCommand = 'gdalwarp -t_srs EPSG:3973 -wo SAMPLE_STEPS=1000 -wo SAMPLE_GRID=YES -te -5000000 -5000000 5000000 5000000 -tr 4000 4000 -overwrite'
+#		
+#		# process these files
+#		inputFile = 'HDF4_SDS:SEAWIFS_L2:"' + iFile + '":' + band
+#		outputFile = oDir + band + '.tif'
+#		
+#				
+#		# convert command to list of strings
+#		gdalCommandList = gdalCommand.split(' ')
+#		# add input and output files to the list
+#		gdalCommandList += [inputFile, outputFile]
+#		
+#		#print gdalCommandList
+#		
+#		# execute the command
+#		status = subprocess.call(gdalCommandList)        
