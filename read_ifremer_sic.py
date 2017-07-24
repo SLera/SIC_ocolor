@@ -125,6 +125,8 @@ PROJCS["WGS 84 / NSIDC EASE-Grid North",
             AXIS["X",EAST],
                 AXIS["Y",NORTH],
         AUTHORITY["EPSG","3973"]]"""
+                    
+wkt1 = 'LOCAL_CS["WGS 84 / NSIDC EASE-Grid North",GEOGCS["WGS 84",DATUM["unknown",SPHEROID["unretrievable - using WGS84",6378137,298.257223563]],PRIMEM["Greenwich",0],UNIT["degree",0.0174532925199433]],AUTHORITY["EPSG","3973"],UNIT["metre",1,AUTHORITY["EPSG","9001"]]]'
 
 sic_cs = osr.SpatialReference()
 sic_cs.ImportFromWkt(wkt_wgs84)
@@ -135,7 +137,7 @@ gtiff_cs.ImportFromWkt(wkt_gtiff)
 transform = osr.CoordinateTransformation(sic_cs,gtiff_cs)
 (x0,y0,z0) = transform.TransformPoint(lon0,lat0)
 
-newRasterfn = 'sic.tiff'
+newRasterfn = 'sic7.tiff'
 rasterOrigin = [x0,y0]
 pixelWidth = 12500  # size of the pixel in m    
 pixelHeight= 12500 
@@ -146,16 +148,20 @@ def array2raster(newRasterfn,rasterOrigin,pixelWidth,pixelHeight,array):
     rows = array.shape[0]
     originX = rasterOrigin[0]
     originY = rasterOrigin[1]
-
+    
     driver = gdal.GetDriverByName('GTiff')
     outRaster = driver.Create(newRasterfn, cols, rows, 1, gdal.GDT_Byte)
+    outRaster.GetRasterBand(1).WriteArray(array)
+    #outband = outRaster.GetRasterBand(1)
+    #outband.WriteArray(array)
+    #outRasterSRS = osr.SpatialReference()
+    #outRasterSRS.ImportFromEPSG(3973)
+    #outRasterSRS.ImportFromWkt(wkt_gtiff)
+    EPSG3973_proj4 = '+proj=laea +lat_0=90 +lon_0=0 +x_0=0 +y_0=0 +datum=WGS84 +units=m +no_defs'
+    outRaster.SetProjection(wkt1)
     outRaster.SetGeoTransform((originX, pixelWidth, 0, originY, 0, pixelHeight))
-    outband = outRaster.GetRasterBand(1)
-    outband.WriteArray(array)
-    outRasterSRS = osr.SpatialReference()
-    outRasterSRS.ImportFromEPSG(3973)
-    outRaster.SetProjection(outRasterSRS.ExportToWkt())
-    outband.FlushCache()
+    #outRaster.SetProjection(outRasterSRS.ImportFromWkt(wkt_gtiff))
+    #outRaster.FlushCache()
 
 array2raster(newRasterfn,rasterOrigin,pixelWidth,pixelHeight,array)
 
