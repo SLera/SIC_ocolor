@@ -86,19 +86,24 @@ def filter_array( data_set, filt ):
     for i in range(np.shape(q)[0]):
         for j in range(np.shape(q)[1]):
             res[i,j] = filt( v[i,j], mv[i,j], q[i,j], land_val, nodata_val)
+    plt.figure()
+    plt.imshow(res)
+    plt.colorbar()
+    plt.show()
+    print np.unique(res), res.min(), res.max()
     return res
 
 
 def gdalwarp (input_file, target_file, epsg,xmin,xmax,ymin,ymax,x_size,y_size):
     #print 'gdalwarp -t_srs %s -te %s %s %s %s -tr %s %s -overwrite -of GTiff %s %s' % (epsg, xmin, ymin, xmax, ymax, x_size, y_size, input_file, target_file)
-    os.system('gdalwarp --config GDAL_DATA "/home/valeria/Programs/miniconda/share/gdal" -r average -t_srs %s -te %s %s %s %s -tr %s %s -overwrite -of GTiff %s %s' % (epsg, xmin, ymin, xmax, ymax, x_size, y_size, input_file, target_file))
+    os.system('gdalwarp --config GDAL_DATA "/home/valeria/Programs/miniconda/share/gdal" -r near -t_srs %s -te %s %s %s %s -tr %s %s -overwrite -of GTiff %s %s -et 0.01 -dstnodata -999' % (epsg, xmin, ymin, xmax, ymax, x_size, y_size, input_file, target_file))
 
 def prepare_nsidc_ic_filtered (input_nc, output_tiff):
     dataset = netCDF4.Dataset(input_nc)
 #   ice_concentration = dataset.variables['concentration'][:][0]
     sic = filter_array(dataset, filter1)
     ice_concentration = sic
-    print ice_concentration
+#    print ice_concentration
     
     driver = gdal.GetDriverByName('GTiff')
     outData = driver.Create('temp2.tif', ice_concentration.shape[1], ice_concentration.shape[0], 1, gdal.GDT_Int16)
