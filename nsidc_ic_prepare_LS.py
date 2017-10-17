@@ -68,7 +68,7 @@ def filter2( v, mv, q, land_val, nodata_val ):
      mv - np.array mask for 'concentration'
      q - UNUSED np.array 'quality_flag'
      land_value - value to use for land pixels
-     nodata_value - valur to to use for bad quality/nodata pixels
+     nodata_value - value to to use for bad quality/nodata pixels
      """
     if mv:
         return v

@@ -1,0 +1,16 @@
+/home/valeria/DATA/Ocolor/Spectra_test/ESACCI-OC-L3S-RRS-MERGED-8D_DAILY_4km_GEO_PML_RRS-19980210-fv3.1.tif
+/home/valeria/DATA/Ocolor/Spectra_test/ESACCI-OC-L3S-RRS-MERGED-8D_DAILY_4km_GEO_PML_RRS-19980322-fv3.1.tif
+/home/valeria/DATA/Ocolor/Spectra_test/ESACCI-OC-L3S-RRS-MERGED-8D_DAILY_4km_GEO_PML_RRS-19980226-fv3.1.tif
+/home/valeria/DATA/Ocolor/Spectra_test/ESACCI-OC-L3S-RRS-MERGED-8D_DAILY_4km_GEO_PML_RRS-19980407-fv3.1.tif
+/home/valeria/DATA/Ocolor/Spectra_test/ESACCI-OC-L3S-RRS-MERGED-8D_DAILY_4km_GEO_PML_RRS-19980101-fv3.1.tif
+/home/valeria/DATA/Ocolor/Spectra_test/ESACCI-OC-L3S-RRS-MERGED-8D_DAILY_4km_GEO_PML_RRS-19980501-fv3.1.tif
+/home/valeria/DATA/Ocolor/Spectra_test/ESACCI-OC-L3S-RRS-MERGED-8D_DAILY_4km_GEO_PML_RRS-19980218-fv3.1.tif
+/home/valeria/DATA/Ocolor/Spectra_test/ESACCI-OC-L3S-RRS-MERGED-8D_DAILY_4km_GEO_PML_RRS-19980109-fv3.1.tif
+/home/valeria/DATA/Ocolor/Spectra_test/ESACCI-OC-L3S-RRS-MERGED-8D_DAILY_4km_GEO_PML_RRS-19980423-fv3.1.tif
+/home/valeria/DATA/Ocolor/Spectra_test/ESACCI-OC-L3S-RRS-MERGED-8D_DAILY_4km_GEO_PML_RRS-19980306-fv3.1.tif
+/home/valeria/DATA/Ocolor/Spectra_test/ESACCI-OC-L3S-RRS-MERGED-8D_DAILY_4km_GEO_PML_RRS-19980125-fv3.1.tif
+/home/valeria/DATA/Ocolor/Spectra_test/ESACCI-OC-L3S-RRS-MERGED-8D_DAILY_4km_GEO_PML_RRS-19980117-fv3.1.tif
+/home/valeria/DATA/Ocolor/Spectra_test/ESACCI-OC-L3S-RRS-MERGED-8D_DAILY_4km_GEO_PML_RRS-19980202-fv3.1.tif
+/home/valeria/DATA/Ocolor/Spectra_test/ESACCI-OC-L3S-RRS-MERGED-8D_DAILY_4km_GEO_PML_RRS-19980314-fv3.1.tif
+/home/valeria/DATA/Ocolor/Spectra_test/ESACCI-OC-L3S-RRS-MERGED-8D_DAILY_4km_GEO_PML_RRS-19980415-fv3.1.tif
+/home/valeria/DATA/Ocolor/Spectra_test/ESACCI-OC-L3S-RRS-MERGED-8D_DAILY_4km_GEO_PML_RRS-19980330-fv3.1.tif
