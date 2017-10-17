@@ -133,10 +133,14 @@ def create8days_mean (filelist8):
     return mean8, name_mean8
 
 def create8days_nanmean (filelist8):
-    daily_sic_list = []
+    sic_array = read_ifremer_sic_daily(filelist8[0])
+    n_values = np.zeros(np.shape(sic_array))
+    sum_values = np.zeros(np.shape(sic_array))
     name_mean8 = filelist8[0][-13:-5]
-    for i in np.arange(len(filelist8)):
-        daily_sic_list.append(read_ifremer_sic_daily(filelist8[i]))
+    
+    for n in np.arange(len(filelist8)):
+        sic_array = read_ifremer_sic_daily(filelist8[n])
+        for i in range(np.shape(sic_array)[0]):
     
     mean8 = np.nanmean(np.array(daily_sic_list), axis = 1)
     mean8[np.isnan(mean8)]=-999
@@ -148,7 +152,6 @@ def prepare_nsidc_ic_mean8 (mean8, output_tiff):
 #    sic = filter_array(dataset, filter1)
     ice_concentration = mean8
 #    print ice_concentration
-    
     driver = gdal.GetDriverByName('GTiff')
     outData = driver.Create('temp2.tif', ice_concentration.shape[1], ice_concentration.shape[0], 1, gdal.GDT_Int16)
     outData.GetRasterBand(1).WriteArray(ice_concentration)
