@@ -51,7 +51,7 @@ def filter1( v, mv, q, land_val, nodata_val):
      mv - UNUSED np.array mask for 'concentration'
      q - np.array 'quality_flag'
      land_value - value to use for land pixels
-     nodata_value - valur to to use for bad quality/nodata pixels
+     nodata_value - value to to use for bad quality/nodata pixels
      """
     if q == 0:
         return v
@@ -81,8 +81,8 @@ def filter_array( data_set, filt ):
     mv = data_set.variables['concentration'][:].mask[0,:,:]
     #np.save('q.npy')
     res = np.zeros( np.shape(v) )
-    land_val = -999
-    nodata_val = -999
+    land_val = np.nan
+    nodata_val = np.nan
     for i in range(np.shape(q)[0]):
         for j in range(np.shape(q)[1]):
             res[i,j] = filt( v[i,j], mv[i,j], q[i,j], land_val, nodata_val)
@@ -115,4 +115,4 @@ def prepare_nsidc_ic_filtered (input_nc, output_tiff):
     
     gdalwarp('temp2.tif', output_tiff, target_epsg, target_xmin, target_xmax, target_ymin, target_ymax, taget_xsize, target_ysize)
 
-prepare_nsidc_ic_filtered ('19980101.nc','19980101_NaN_2.tif')
+prepare_nsidc_ic_filtered ('19980101.nc','19980101_NaN.tif')
