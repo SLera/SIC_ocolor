@@ -16,25 +16,6 @@ import matplotlib
 from matplotlib import pyplot as plt
 from datetime import datetime
 
-#INDIR_ref_dates= '/home/valeria/DATA/Ocolor/Spectra_test'
-#filter_name = []
-#for root, dirs, files in os.walk(INDIR_ref_dates):
-#    for file in files:
-#        filter_name.append(os.path.join(root, file))
-#        
-#with open ('filter_name_test.txt', 'w') as in_files:
-#    for item in filter_name: 
-#        in_files.write(item+'\n')
-
-###creater list of 8-days mean reference dates (1 day of 8-days intrval)
-#def extract_ref_dates_temp(test_file):
-#    ref_dates= []
-#    for item in test_file:
-#        ref_dates_txt = item[-19:-11]
-#        #print item[-19:-11]
-#        ref_dates.append(datetime.strptime(ref_dates_txt, '%Y%m%d'))
-#    return ref_dates 
-
 ##creater list of 8-days mean reference dates (1 day of 8-days intrval)
 def extract_ref_dates(INDIR_ref_dates):
     ref_dates= []
@@ -117,19 +98,6 @@ def filter_array( data_set, filt ):
     print np.unique(res), res.min(), res.max()
     return res
 
-INDIR_sic = '/home/valeria/DATA/Ocolor/SIC_test'
-fpath_sic,dates_sic = extract_dates_sic(INDIR_sic,1998)
-
-INDIR_ref_dates= '/home/valeria/DATA/Ocolor/Spectra_test'
-
-text_file = open('filter_name_test.txt', 'r')
-ref_ls = text_file.readlines()
-ref_ls.sort()
-
-ref_dates = extract_ref_dates(INDIR_ref_dates)
-
-ref_dateA = ref_dates[0]
-
 def find_8d_files(ref_date,dates_sic):
     ls_sic_8days = []
     for i in range(len(dates_sic)):
@@ -145,13 +113,63 @@ def calculate_8d_mean(ls_sic_8days):
         ls.append(daily_sic)
     sic_array = np.array(ls)
     sic_mean = np.nanmean(sic_array,axis=0)
-    return sic_array, sic_mean
+    nnan = np.isnan(sic_mean)
+    ind = np.where(nnan==1)
+    sic_mean[ind]=-999
+    return sic_mean
+
+def gdalwarp (input_file, target_file, epsg,xmin,xmax,ymin,ymax,x_size,y_size):
+    #print 'gdalwarp -t_srs %s -te %s %s %s %s -tr %s %s -overwrite -of GTiff %s %s' % (epsg, xmin, ymin, xmax, ymax, x_size, y_size, input_file, target_file)
+    os.system('gdalwarp --config GDAL_DATA "/home/valeria/Programs/miniconda/share/gdal" -r near -t_srs %s -te %s %s %s %s -tr %s %s -overwrite -of GTiff %s %s -et 0.01 -dstnodata -999' % (epsg, xmin, ymin, xmax, ymax, x_size, y_size, input_file, target_file))
+
+def prepare_nsidc_ic_filtered (sic_mean, output_tiff):
+#    dataset = netCDF4.Dataset(input_nc)
+##   ice_concentration = dataset.variables['concentration'][:][0]
+#    sic = filter_array(dataset, filter1)
+    ice_concentration = sic_mean
+#    print ice_concentration
+    
+    driver = gdal.GetDriverByName('GTiff')
+    outData = driver.Create('temp.tif', ice_concentration.shape[1], ice_concentration.shape[0], 1, gdal.GDT_Int16)
+    outData.GetRasterBand(1).WriteArray(ice_concentration)
+    outData.SetGeoTransform(geotransform_opt)
+    outData.SetProjection(NSIDC_WKT)
+    outData.FlushCache()
+    del outData
+    
+    gdalwarp('temp.tif', output_tiff, target_epsg, target_xmin, target_xmax, target_ymin, target_ymax, taget_xsize, target_ysize)
+
+##### CONSTS
+xSize = 12500
+ySize = -12500
+xCorner = -3850074.56
+yCorner = 5850046.72
+geotransform_opt = [xCorner, xSize, 0, yCorner, 0, ySize]
+NSIDC_WKT = 'PROJCS["NSIDC Sea Ice Polar Stereographic North",GEOGCS["Unspecified datum based upon the Hughes 1980 ellipsoid",DATUM["Not_specified_based_on_Hughes_1980_ellipsoid",SPHEROID["Hughes 1980",6378273,298.279411123064,AUTHORITY["EPSG","7058"]],AUTHORITY["EPSG","6054"]],PRIMEM["Greenwich",0,AUTHORITY["EPSG","8901"]],UNIT["degree",0.0174532925199433,AUTHORITY["EPSG","9122"]],AUTHORITY["EPSG","4054"]],PROJECTION["Polar_Stereographic"],PARAMETER["latitude_of_origin",70],PARAMETER["central_meridian",-45],PARAMETER["scale_factor",1],PARAMETER["false_easting",0],PARAMETER["false_northing",0],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["X",EAST],AXIS["Y",NORTH],AUTHORITY["EPSG","3411"]]'
+
+# Domain
+#EPSG:3973 -te -5000000 -5000000 5000000 5000000 -tr 4000 4000
+target_epsg = 'EPSG:3973'
+target_xmin = -5000000
+target_ymin = -5000000
+target_xmax = 5000000
+target_ymax = 5000000
+taget_xsize = 4000
+target_ysize = 4000
+#####
 
 
-ls_sic_8days = find_8d_files(ref_dateA,dates_sic)
-sic_array, sic_mean = calculate_8d_mean(ls_sic_8days)
-plt.figure()
-plt.imshow(sic_mean)
-plt.title('mean')
-plt.show()
+INDIR_sic = '/home/valeria/DATA/Ocolor/SIC_test'
+INDIR_ref_dates= '/home/valeria/DATA/Ocolor/Spectra_test'
+OUTDIR ='./'
 
+fpath_sic,dates_sic = extract_dates_sic(INDIR_sic,1998)
+ref_dates = extract_ref_dates(INDIR_ref_dates)
+
+for i in range(len(ref_dates)):
+    ref_date=ref_dates[i]
+    fname = ref_date.strftime('%Y%m%d')
+    print fname
+    ls_sic_8days = find_8d_files(ref_date,dates_sic)
+    sic_mean = calculate_8d_mean(ls_sic_8days)
+    prepare_nsidc_ic_filtered (sic_mean, OUTDIR+'IFREMER_IceConcentration_8day_'+fname +'.tif')
