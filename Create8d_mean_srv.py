@@ -33,11 +33,13 @@ def extract_dates_sic(INDIR_SIC, year):
     flist_sic = []
     dates_sic = []
     for root, dirs, files in os.walk(INDIR_sic+'/'+str(year)):
-        for file in files:
-            fpath = os.path.join(root, file)
-            flist_sic.append(fpath)
-            date_sic = datetime.strptime(fpath[-11:-3], '%Y%m%d')
-            dates_sic.append(date_sic)
+        for cfile in files:
+            fpath = os.path.join(root, cfile)
+            if cfile.endswith('.nc'):
+                flist_sic.append(fpath)
+                date_sic = datetime.strptime(fpath[-11:-3], '%Y%m%d')
+    
+                dates_sic.append(date_sic)
     return flist_sic, dates_sic
 
 def read_ifremer_sic_daily(FILENAME):
