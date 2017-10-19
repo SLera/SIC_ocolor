@@ -162,14 +162,15 @@ target_ysize = 4000
 INDIR_sic = '/home/valeria/DATA/Ocolor/SIC_test'
 INDIR_ref_dates= '/home/valeria/DATA/Ocolor/Spectra_test'
 OUTDIR ='./'
-
-fpath_sic,dates_sic = extract_dates_sic(INDIR_sic,1998)
-ref_dates = extract_ref_dates(INDIR_ref_dates)
-
-for i in range(len(ref_dates)):
-    ref_date=ref_dates[i]
-    fname = ref_date.strftime('%Y%m%d')
-    print fname
-    ls_sic_8days = find_8d_files(ref_date,dates_sic)
-    sic_mean = calculate_8d_mean(ls_sic_8days)
-    prepare_nsidc_ic_filtered (sic_mean, OUTDIR+'IFREMER_IceConcentration_8day_'+fname +'.tif')
+years = np.arrange(1998,2016)
+for y in years:
+    fpath_sic,dates_sic = extract_dates_sic(INDIR_sic,y)
+    ref_dates = extract_ref_dates(INDIR_ref_dates)
+    
+    for i in range(len(ref_dates)):
+        ref_date=ref_dates[i]
+        fname = ref_date.strftime('%Y%m%d')
+        print fname
+        ls_sic_8days = find_8d_files(ref_date,dates_sic)
+        sic_mean = calculate_8d_mean(ls_sic_8days)
+        prepare_nsidc_ic_filtered (sic_mean, OUTDIR+'IFREMER_IceConcentration_8day_'+fname +'.tif')
